@@ -36,11 +36,15 @@ void shareEqual(){
     if(*t7 == *t6){
        cout << "test 6 ... OK\n";
     }
+    my_shared_ptr<int> t9(new int {44});
+    t5 = move(t9);
+    if(*t5 == 44)
+        cout << "test 7 ... OK\n";
 }
 
 void uniquetest(){
     //my_unique_ptr<int> u1(new int {6});
-    //my_unique_ptr<int> u2();
+    //my_unique_ptr<int> u2;
     //u2 = u1;
 }
 

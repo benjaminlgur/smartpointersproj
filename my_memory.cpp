@@ -57,7 +57,6 @@ bool my_shared_ptr<T>::isNullptr() const{
 
 template<typename T>
 my_shared_ptr<T>::my_shared_ptr(): ptr_(nullptr), counter_(nullptr){
-    std::cout << "proof\n";
 }
 
 template<typename T>
@@ -92,6 +91,8 @@ my_shared_ptr<T>::~my_shared_ptr(){
     if((*counter_) == 1){
         delete ptr_;
         delete counter_;
+        ptr_ = nullptr;
+        counter_ = nullptr;
     }
     else {
         ptr_ = nullptr;
@@ -133,8 +134,10 @@ void my_shared_ptr<T>::operator=(my_shared_ptr<T> && smart_ptr){
         clear();
         //move() shouldnt be necciary but put in for safty. 
         ptr_ = std::move(smart_ptr.ptr_);
-        counter_ = std::move(smart_ptr.ptr_);
+        counter_ = std::move(smart_ptr.counter_);
         //do not need to modify counter as count will be the same.
+        smart_ptr.ptr_ = nullptr;
+        smart_ptr.counter_ = nullptr;
     }
 }
 
@@ -147,6 +150,8 @@ void my_shared_ptr<T>::clear(){
     if((*counter_) == 1){
         delete ptr_;
         delete counter_;
+        ptr_ = nullptr;
+        counter_ = nullptr;
     }
     else {
         ptr_ = nullptr;
