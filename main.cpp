@@ -30,12 +30,12 @@ void shareEqual(){
     if(*t5 == *t6){
         cout << "test 5 ... OK\n";
     }
-    my_shared_ptr<int> t7();
+    my_shared_ptr<int> t7;
     my_shared_ptr<int> t8(t7);
-    //t7 = t6;
-    //if(*t7 == *t6){
-       //cout << "test 6 ... OK\n";
-    //}
+    t7 = t6;
+    if(*t7 == *t6){
+       cout << "test 6 ... OK\n";
+    }
 }
 
 void uniquetest(){

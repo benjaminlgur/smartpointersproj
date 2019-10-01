@@ -56,7 +56,9 @@ bool my_shared_ptr<T>::isNullptr() const{
 }
 
 template<typename T>
-my_shared_ptr<T>::my_shared_ptr(): ptr_(nullptr), counter_(nullptr){}
+my_shared_ptr<T>::my_shared_ptr(): ptr_(nullptr), counter_(nullptr){
+    std::cout << "proof\n";
+}
 
 template<typename T>
 my_shared_ptr<T>::my_shared_ptr(T* obj): ptr_(obj), counter_(new int {1}){}
