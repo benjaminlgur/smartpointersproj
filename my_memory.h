@@ -1,3 +1,5 @@
+//Benjamin Gur CSCI Project 1 my_memory.h
+
 #pragma once
 
 #include<iostream>

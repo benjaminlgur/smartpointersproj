@@ -1,3 +1,6 @@
+//Benjamin Gur CSCI Project 1 my_memory.cpp
+
+
 #include "my_memory.h"
 
 //Unique pointer area.
@@ -14,7 +17,7 @@ my_unique_ptr<T>::~my_unique_ptr(){
 }
 
 template<typename T>
-my_unique_ptr<T>::my_unique_ptr(my_unique_ptr<T> && smart_ptr):ptr_(std::move(smart_ptr.ptr_)){ //move() shoudnt be necciary but put in for safty.
+my_unique_ptr<T>::my_unique_ptr(my_unique_ptr<T> && smart_ptr):ptr_(smart_ptr.ptr_){ 
     smart_ptr.ptr_ = nullptr;
 }
 
@@ -40,7 +43,7 @@ T* my_unique_ptr<T>::operator->(){
 template<typename T>
 void my_unique_ptr<T>::operator=(my_unique_ptr && smart_ptr){
     delete ptr_;
-    ptr_ = std::move(smart_ptr.ptr_); //move() shouldent be neccicary but put in for safty.
+    ptr_ = smart_ptr.ptr_; 
     smart_ptr.ptr_ = nullptr;
 }
 
@@ -67,7 +70,11 @@ my_shared_ptr<T>::my_shared_ptr(const my_shared_ptr<T> & smartptr) {
     if(smartptr.isNullptr() == false){
         ptr_ = smartptr.ptr_;
         counter_ = smartptr.counter_;
-        (*counter_)++;
+        if(counter_ != nullptr)
+            (*counter_)++;
+        else
+            std::cerr << "Counter is a nullpointer despite checks\n";
+        
     }
     else { //case of copying uninitlized shared_ptr
         ptr_ = smartptr.ptr_; //should be nullptr
@@ -77,7 +84,7 @@ my_shared_ptr<T>::my_shared_ptr(const my_shared_ptr<T> & smartptr) {
 }
 
 template<typename T>
-my_shared_ptr<T>::my_shared_ptr(my_shared_ptr<T> && smart_ptr): ptr_(std::move(smart_ptr.ptr_)), counter_(std::move(smart_ptr.counter_)){ //move() shouldnt be neccesary but put in for safty.
+my_shared_ptr<T>::my_shared_ptr(my_shared_ptr<T> && smart_ptr): ptr_(smart_ptr.ptr_), counter_(smart_ptr.counter_){ 
     smart_ptr.ptr_ = nullptr;
     smart_ptr.counter_ = nullptr;
     //dont need to touch counter_ as count does not change in any case.
@@ -85,7 +92,7 @@ my_shared_ptr<T>::my_shared_ptr(my_shared_ptr<T> && smart_ptr): ptr_(std::move(s
 
 template<typename T>
 my_shared_ptr<T>::~my_shared_ptr(){
-    if(isNullptr()){ //comparison on nullptr leads to segfaul this is provenative.
+    if(isNullptr()){ //comparison on nullptr leads to segfault this is provenative.
         return;
     }
     if((*counter_) == 1){
@@ -115,13 +122,17 @@ template<typename T>
 void my_shared_ptr<T>::operator=(const my_shared_ptr<T> & smart_ptr){
     if(smart_ptr.isNullptr()){
        clear(); 
-       //return
+       return;
+    }
+    else if(smart_ptr.ptr_ == ptr_){
+        return; // does nothing. 
     }
     else {
-        clear();
+        my_shared_ptr<T> temp(std::move(*this));
         ptr_ = smart_ptr.ptr_;
         counter_ = smart_ptr.counter_;
         (*counter_)++; //another shared pointer points to the same object so count is increased.
+        temp.clear();
     }
 }
 
@@ -132,9 +143,8 @@ void my_shared_ptr<T>::operator=(my_shared_ptr<T> && smart_ptr){
     }
     else {
         clear();
-        //move() shouldnt be necciary but put in for safty. 
-        ptr_ = std::move(smart_ptr.ptr_);
-        counter_ = std::move(smart_ptr.counter_);
+        ptr_ = smart_ptr.ptr_;
+        counter_ = smart_ptr.counter_;
         //do not need to modify counter as count will be the same.
         smart_ptr.ptr_ = nullptr;
         smart_ptr.counter_ = nullptr;
